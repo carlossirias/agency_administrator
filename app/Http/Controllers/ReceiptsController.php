@@ -20,7 +20,7 @@ class ReceiptsController extends Controller
         ->join('sellers', 'sellers.id', '=', 'daily_records.seller_id')
         ->where('agency_id', Auth::user()->id)
         ->where('active', false)
-        ->whereRaw('DATE(daily_records.arrival_datetime) = '.$actualDate)
+        ->whereDate('daily_records.arrival_datetime', '=', now()->toDateString())
         ->get();
 
         $result = DB::table('daily_records')
