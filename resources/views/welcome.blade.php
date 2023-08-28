@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Agencia Eskimo</title>
     @vite('resources/css/app.css')
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Logo_Eskimo_Nicaragua.svg/2560px-Logo_Eskimo_Nicaragua.svg.png" type="image/x-icon">
 </head>
 <body>
     <main  class="bg-[url('https://lala.com.gt/wp-content/themes/lala-theme/images/bg-home.jpg')] h-screen  w-full bg-cover grid place-content-center">
