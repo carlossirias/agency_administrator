@@ -23,9 +23,10 @@ class AgencyController extends Controller
     public function index()
     {
         Auth::loginUsingId(1);
+        $actualDate = Carbon::now()->format('Y-m-d');
         $id = Auth::id();
 
-        $activeSellers = DB::select("SELECT daily_records.id, seller_id, active, seller_name, seller_adress,seller_image, seller_phone, DATE_FORMAT(daily_records.departure_datetime, '%h:%i %p') AS departure_datetime, DATE_FORMAT(daily_records.arrival_datetime, '%h:%i %p') AS arrival_datetime FROM daily_records INNER JOIN sellers ON daily_records.seller_id = sellers.id WHERE DATE_FORMAT(daily_records.departure_datetime, '%Y-%m-%d') = CURRENT_DATE AND sellers.agency_id = ? AND sellers.enabled = true ORDER BY daily_records.active DESC, daily_records.departure_datetime DESC;", [Auth::user()->id]);
+        $activeSellers = DB::select("SELECT daily_records.id, seller_id, active, seller_name, seller_adress,seller_image, seller_phone, DATE_FORMAT(daily_records.departure_datetime, '%h:%i %p') AS departure_datetime, DATE_FORMAT(daily_records.arrival_datetime, '%h:%i %p') AS arrival_datetime FROM daily_records INNER JOIN sellers ON daily_records.seller_id = sellers.id WHERE DATE_FORMAT(daily_records.departure_datetime, '%Y-%m-%d') = ? AND sellers.agency_id = ? AND sellers.enabled = true ORDER BY daily_records.active DESC, daily_records.departure_datetime DESC;", [$actualDate,Auth::user()->id]);
         return view('dashboard', compact('id', 'activeSellers'));
     }
 
