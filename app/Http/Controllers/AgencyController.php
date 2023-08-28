@@ -34,6 +34,7 @@ class AgencyController extends Controller
     {
         //It must be validated if the user is registered, but for the demo, the first agency will always be used.
         Auth::loginUsingId(1);
+        $actualDate = Carbon::now()->format('Y-m-d');
         
         $palletes = DB::table('prices_palletes')
         ->join('palletes', 'palletes.id', '=', 'prices_palletes.pallete_id')
@@ -42,7 +43,7 @@ class AgencyController extends Controller
         ->orderByDesc('promotion')
         ->get();
 
-        $sellers = DB::select("SELECT id, seller_name FROM sellers WHERE id NOT IN (SELECT seller_id FROM daily_records WHERE DATE_FORMAT(departure_datetime, '%Y-%m-%d') = CURRENT_DATE) AND enabled = true AND agency_id = ?;", [Auth::user()->id]);
+        $sellers = DB::select("SELECT id, seller_name FROM sellers WHERE id NOT IN (SELECT seller_id FROM daily_records WHERE DATE_FORMAT(departure_datetime, '%Y-%m-%d') = ?) AND enabled = true AND agency_id = ?;", [$actualDate,Auth::user()->id]);
         return view('send', compact('sellers', 'palletes'));
     }
 
