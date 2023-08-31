@@ -4,6 +4,7 @@
 <div align="center">
     <img src="https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white">
     <img src="https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white">
+    <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white">
     <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white">
     <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white">
     <img src="https://img.shields.io/badge/Railway-0B0D0E.svg?style=for-the-badge&logo=Railway&logoColor=white">
@@ -45,7 +46,7 @@ Both the sellers and the agency owners earn profits through the margin they gene
 
 ### Sellers information
 
-<p align='center'><img src='https://i.ibb.co/yXYRSCL/Screenshot-2023-08-29-190909.png' width='800'></p>
+<p align='center'><img src='https://i.ibb.co/MkbZ3Tb/935shots-so.png'></p>
 
 In this section, the agency administrator will be able to perform various actions related to the sales agents, such as adding, viewing, editing, and deleting their records. Each sales agent will have their own dedicated area where their personal information will be stored, including their Name, ID Number, Phone Number, Address, and even a profile picture. This profile picture will serve as a visual aid for the administrator to easily recognize the sales agent.
 
@@ -54,7 +55,7 @@ In the event that a sales agent has not been terminated but the administrator wi
 
 ### Prices
 
-<p align='center'><img src='https://i.ibb.co/7SRZcf7/Screenshot-2023-08-29-192213.png' width='800'></p>
+<p align='center'><img src='https://i.ibb.co/KF4bX0R/549shots-so.png'></p>
 
 As mentioned earlier, the initial price will be provided by Eskimo, while the independent agency needs to determine the additional price margin. To facilitate this process, there is a dedicated `Pricing` section where agency administrators can access information about the ice creams, including whether any promotions are applicable and their corresponding suggested prices.
 
@@ -63,7 +64,7 @@ Within this same section, administrators have the ability to choose the desired 
 
 ### Dashboard
 
-<p align='center'><img src='https://i.ibb.co/tYH6T7M/Screenshot-2023-08-29-194617.png' width='800'></p>
+<p align='center'><img src='https://i.ibb.co/37j3193/322shots-so.png' ></p>
 
 In the dashboard, administrators will have the ability to view the active sellers for that specific day. In this same section, there is a button provided for dispatching the sellers. Clicking on this button will redirect us to another section where we can select the seller we wish to dispatch. The application will only display the sellers who have not yet been dispatched on that day.
 
@@ -73,7 +74,7 @@ Within these same cards, clicking on the seller's name will reveal special dispa
 
 ### Receipts
 
-<p align='center'><img src='https://i.ibb.co/5K0LHcf/Receipts.jpg' width='800'></p>
+<p align='center'><img src='https://i.ibb.co/f8jYwHD/653shots-so.png'></p>
 
 Finally, in the `Receipts` section, the administrator will have the ability to view both the receipts issued on the current day and older receipts from different days. The administrator can also access information about the arrival and departure dates and times. Similar to the dashboard, a `View Receipt` button will be displayed. Clicking on this button will redirect them to another section where a PDF receipt will be generated with the dispatch information. This includes details such as the number of palettes dispatched, the number returned, the total sales, and the amount owed to the agency.
 
@@ -90,9 +91,67 @@ Note: _The demo does not include an agency login system because it is focused on
 
 ### Agencies
 
+| id   | agency_name | agency_phone   | adency_adress |
+| :--- | :---------- | :------------- | :------------ |
+| `PK` |             |                |               |
+
+This is where the database begins. The `agencies` table is used to store the multiple agencies that exist in our application, as well as their main information, such as Name, Address, Number, etc.
+
 ### Sellers
 
 | id   | agency_id            | seller_name   | seller_phone | seller_identificacion_number | seller_adress | enabled | seller_image |
 | :--- | :------------------- | :------------ | :----------- | :--------------------------- | :------------ | :------ | :----------- |
-| `PK` | **agencies.id** `FK` |               |              |                              |               | `true`  | _NULLEABLE_  |
+| `PK` | **agencies.id** `FK` |               |              |                              |               | `true`  | _NULLABLE_   |
+
+The `sellers` table enables us to accommodate multiple vendors in our application, along with their personal information. Additionally, the table includes a column where the ID from the `agencies` table is stored. This allows us to determine the agency from which the vendor originates.
+
+### Palletes
+
+| id   | pallete_name | pallete_image | pallete_description | suggested_price | promotion | promtion_price |
+| :--- | :----------- | :------------ | :------------------ | :-------------- | :-------- | :------------- |
+| `PK` |              |               | _NULLABLE_          |                 | `false`   | `10`           |
+
+The `palettes` table enables Eskimo to add new ice cream flavors for all agencies, along with their suggested prices. It also allows for the selection of which flavors are on promotion and which ones are not, including the promotional price for those specific flavors.
+
+### Prices Palletes
+
+| id   | agency_id            | pallete_id           | added_price | 
+| :--- | :------------------- | :------------------- | :---------- |
+| `PK` | **agencies.id** `FK` | **palletes.id** `FK` | `0.00`      |
+
+We state that each agency has its own added price. Due to this, this table is closely related to the `palettes` table as it houses the added price for each agency and each ice cream flavor. The `agency_id` and `palette_id` columns enable us to determine the price for that specific agency and that particular flavor.
+
+Note: _The application features listeners for each time a palette is created in the `palettes` table. This allows for the automatic creation of a new palette for all agencies that have been created up to that point. This ensures that all agencies can view the new palette and update their added price accordingly. This functionality could also be implemented as a trigger within the database._
+
+### Daily Records
+
+| id   | seller_id           | active        | departure_datetime | arrival_datetime | total_earned | 
+| :--- | :------------------ | :------------ | :----------------- | :--------------- | :----------- | 
+| `PK` | **sellers.id** `FK` | `true`        |                    | _NULLABLE_       |  _NULLABLE_  |
+
+In the `daily_records` table, we can find the dispatch information of the sellers. For instance, it includes the ID from the `sellers` table, which allows us to determine which seller carried out the dispatch. Additionally, it records the dispatch time and, if applicable, the reception time. The total earnings are also recorded. It's important to highlight that the "daily_pallete_sales" table maintains a strong relationship with this one, as the overall earnings calculation depends significantly on the data recorded in that table.
+
+### Daily Pallete Sales
+
+| id   | daily_record_id         | pallete_id           | price | quantity_send | quantity_sold |
+| :--- | :---------------------- | :------------------- | :---- |:------------ | :------------ |
+| `PK` | **daily_record.id** `FK`|  **pallete.id** `FK` |       |             | _NULLEABLE_   |
+
+In the previous table, we stored dispatch information. However, that table doesn't enable us to store the quantity of pallets the seller received or brought along. For this purpose, this new table has been created. By utilizing the "daily_record_id" and "pallete_id" identifiers, it's possible to access the exact dispatch record as well as the specific palette information. This structure will enable the application to perform calculations successfully.
+
+Note: _In this same table, the exact price at which the seller's dispatch occurred is also stored. This way, if any changes are made in the `prices_pallets` table, it will not affect past records. The seller will not be affected even if there was a price change on that day._
+
+## Roadmap
+
+- Implement a login system for the agencies.
+- Implement upload additional files for the seller's profile, such as police records, etc.
+- Enhance the security of the system.
+- Implement a search system for records.
+- Section to view agency statistics.
+
+## Support 
+
+For support, email carlos.sirias04@gmail.com.
+
+
 
